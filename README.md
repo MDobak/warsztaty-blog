@@ -4,7 +4,7 @@ Blog
 Kod prostego bloga stworzonego w Symfony 2 podczas warsztatów organizowanych w ramach
 śniadania w Connectmedica które odbyły się 28 listopada 2015.
 
-[Slajdy z wykładów.](/slides/index.html)
+[Slajdy z wykładów.](https://rawgit.com/MDobak/warsztaty-blog/master/slides/index.html)
 
 Instalacja
 ------------------------
