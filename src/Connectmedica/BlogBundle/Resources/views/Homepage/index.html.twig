@@ -1,0 +1,13 @@
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% block body %}
+    <h1>Lista postów:</h1>
+
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ path('connectmedica_blog_post_show', {id: post.id, slug: post.slug}) }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

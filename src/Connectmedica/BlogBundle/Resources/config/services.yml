@@ -1,0 +1,16 @@
+services:
+
+    connectmedica_blog.slug_listener:
+        class: Connectmedica\BlogBundle\EventListener\SlugListener
+        arguments: [@connectmedica_blog.slugify]
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    connectmedica_blog.slugify_post_handler:
+        class: Connectmedica\BlogBundle\Util\SlugifyPostHandler
+
+    connectmedica_blog.slugify:
+        class: Connectmedica\BlogBundle\Util\Slugify
+        calls:
+            - [addHandler, [@connectmedica_blog.slugify_post_handler]]

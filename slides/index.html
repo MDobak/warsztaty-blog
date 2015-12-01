@@ -1,0 +1,2730 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Symfony 2 od podstaw!</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/cm.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <style type="text/css">
+            .source-link {
+                text-align: right !important;
+                font-size: 14px !important;
+            }
+
+            input, select, textarea {
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 18px;
+                border: 2px solid #dc4284;
+                border-radius: 0px;
+                background: rgba(255,255,255,0.7);
+                padding: 5px;
+                margin: 5px 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>Symfony 2</h1>
+                    <h3>Od podstaw</h3>
+                    <p>Connectmedica 2015</p>
+                    <small>
+                        Michał Dobaczewski
+                    </small>
+                </section>
+
+                <section>
+                    <h2>Dlaczego warto używać frameworka?</h2>
+
+                    <ul>
+                        <li class="fragment">Zawiera gotowe rozwiązania popularnych problemów</li>
+                        <li class="fragment">Pomaga zorganizować kod</li>
+                        <li class="fragment">Przyspiesza tworzenie aplikacji</li>
+                        <li class="fragment">Inni programiści szybciej zrozumieją Twój kod</li>
+                        <li class="fragment">Pomoc społeczności w internecie</li>
+                        <li class="fragment">Tysiące gotowych rozwiązań</li>
+                        <li class="fragment">Uczy dobrych praktyk</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <p>Nie wymyślaj koła na nowo!</p>
+                    <img src="img/bike.jpg" style="height: 50vh" />
+                </section>
+
+                <section>
+                    <h2>Co fajnego oferuje Symfony?</h2>
+
+                    <ul>
+                        <li class="fragment">Łatwa internacjonalizacja aplikacji</li>
+                        <li class="fragment">Świetny system szablonów Twig</li>
+                        <li class="fragment">Obsługa formularzy</li>
+                        <li class="fragment">Gotowe mechanizmy uwierzytelniania i autoryzacji</li>
+                        <li class="fragment">Tysiące gotowych pakietów</li>
+                        <li class="fragment">Wbudowany debugger</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Nim zaczniemy...</h1>
+                    <h2>Kilka słów o standardach PSR</h2>
+
+                    <p class="source">
+                        http://www.php-fig.org/
+                    </p>
+                </section>
+
+                <section>
+                    <h3>PSR-4: Autoloader</h3>
+                    <p>
+                        Standards ten opisuje sposób nazywania klas i ich rozmieszczenia w katalogach w taki sposób,
+                        aby różne projekty mogły korzystać z tego samego mechanizmu ładowania klas.
+                    </p>
+
+                    <p>
+                        Dzięki niemu możemy łączyć bez obaw różne projekty zgodne ze standardem.
+                    </p>
+
+                    <p style="font-family: monospace">\&lt;Vendor Name&gt;\(&lt;Namespace&gt;\)*&lt;Class Name&gt;</p>
+                </section>
+
+                <section>
+                    <h2>PSR-4: Autoloader</h2>
+
+                    <table style="font-size: 70%">
+                        <thead>
+                        <tr>
+                            <th>W pełni poprawna nazwa klasy</th>
+                            <th>Prefiks przestrzeni nazw</th>
+                            <th>Bazowy katalog</th>
+                            <th>Wynikowa ścieżka pliku</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>\Acme\Log\Writer\File_Writer</td>
+                            <td>Acme\Log\Writer</td>
+                            <td>./acme-log-writer/lib/</td>
+                            <td>./acme-log-writer/lib/File_Writer.php</td>
+                        </tr>
+                        <tr>
+                            <td>\Aura\Web\Response\Status</td>
+                            <td>Aura\Web</td>
+                            <td>/path/to/aura-web/src/</td>
+                            <td>/path/to/aura-web/src/Response/Status.php</td>
+                        </tr>
+                        <tr>
+                            <td>\Symfony\Core\Request</td>
+                            <td>Symfony\Core</td>
+                            <td>./vendor/Symfony/Core/</td>
+                            <td>./vendor/Symfony/Core/Request.php</td>
+                        </tr>
+                        <tr>
+                            <td>\Zend\Acl</td>
+                            <td>Zend</td>
+                            <td>/usr/includes/Zend/</td>
+                            <td>/usr/includes/Zend/Acl.php</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section>
+                    <h2>Czego potrzebujemy?</h2>
+
+                    <ul>
+                        <li class="fragment">Baza danych obsługiwana przez Doctrine (najlepiej MySQL)</li>
+                        <li class="fragment">PHP w wersji co najmniej 5.3.9</li>
+                        <li class="fragment">
+                            Rozszerzenia PHP:
+                            <ul>
+                                <li class="fragment">JSON</li>
+                                <li class="fragment">PDO (dla Doctrine)</li>
+                                <li class="fragment">ctype</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Instalacja Symfony 2</h2>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php composer.phar create-project symfony/framework-standard-edition blog
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Sprawdź czy wszystko działa!</h2>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/check.php
+                    </code></pre>
+
+                    <img src="img/check.png" style="height: 50vh" />
+                </section>
+
+                <section>
+                    <h1>Część 1: Pierwszy pakiet</h1>
+                </section>
+
+                <section>
+                    <h2>Pierwszy pakiet</h2>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console generate:bundle
+                    </code></pre>
+
+                    <p class="fragment">
+                        Pakiet (bundle) jest podobny do wtyczki w innym oprogramowaniu. Jednak w Symfony wszystko jest
+                        jakimś pakietem, włączając w to funkcjonalności rdzenia frameworka i kod napisany dla każdej
+                        aplikacji.
+                    </p>
+
+                    <p class="fragment">
+                        Pakiet jest ustrukturyzowanym zbiorem plików wewnątrz katalogu, który implementuje pojedynczą
+                        funkcjonalność. Możesz utworzyć BlogBundle, ForumBundle czy pakiet do zarządzania użytkownikami.
+                    </p>
+
+                    <p class="fragment">
+                        Każdy katalog pakietu zawiera wszystko co związane jest z daną funkcjonalnościa, włączając w to
+                        pliki PHP, szablony, arkusze stylów, JavaScript, testy i całą resztę.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Pierwszy pakiet</h2>
+
+                    <img src="img/bundle.png" style="height: 50vh" />
+                </section>
+
+                <section>
+                    <h2>Pierwszy pakiet</h2>
+
+                    <p>Rejestracja pakietu w AppKernel.php</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+            new Connectmedica\BlogBundle\ConnectmedicaBlogBundle(),
+        );
+
+        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+            // ...
+        }
+
+        return $bundles;
+    }
+
+    // ...
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Pierwszy pakiet</h2>
+
+                    <p>Struktura pakietu</p>
+
+                    <ul>
+                        <li class="fragment">/Controller - zawiera kontrolery pakietu</li>
+                        <li class="fragment">/Entity - zawiera modele pakietu</li>
+                        <li class="fragment">/Resources/config - przechowuje konfigurację, włączając w to konfigurację trasowania</li>
+                        <li class="fragment">/Resources/views - zawiera szablony uporządkowane wg nazw kontrolerów</li>
+                        <li class="fragment">/Resources/public - przechowuje obrazy, arkusze stylów, itd.</li>
+                        <li class="fragment">/Tests - zawiera wszystkie testy dla pakietu</li>
+                    </ul>
+
+                    <p class="source-link">
+                        http://symfony-docs.pl/book/page_creation.html#page-creation-bundles
+                    </p>
+                </section>
+
+                <section>
+                    <h1>Część 2: Modele</h1>
+                </section>
+
+                <section>
+                    <h2>Tworzymy modele do Bloga</h2>
+
+                    <ul>
+                        <li>Post - model reprezentujący post na Blogu</li>
+                        <li>Comment - komentarz pod wpisem</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Pierwszy model - Post</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 12px; line-height: 110%">
+namespace Connectmedica\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Post
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @ORM\Column(type="text", nullable=false)
+     *
+     * @var string
+     */
+    protected $content;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     *
+     * @var \DateTime
+     */
+    protected $addedAt;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->addedAt = new \DateTime();
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Pierwszy model - Post</p>
+
+                    <p>Szybki sposób na wygenerowanie setterów i getterów:</p>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:generate:entities Connectmedica/BlogBundle/Entity
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+
+                    <p>
+                        W tym momencie posiadamy model ale nie posiadamy odpowiednich tabel w bazie danych! Aby je
+                        stworzyć korzystamy z komendy:
+                    </p>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:schema:update --force
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+
+                    <img src="img/magic.gif" style="height: 50vh" />
+                </section>
+
+                <section>
+                    <p>Jeśli nic nie popsuliśmy...</p>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+
+                    <img src="img/db.png" style="height: 50vh" />
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Drugi model - Comment</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 12px; line-height: 110%">
+namespace Connectmedica\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Comment
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @var string
+     */
+    protected $author;
+
+    /**
+     * @ORM\Column(type="text", nullable=false)
+     *
+     * @var string
+     */
+    protected $content;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     *
+     * @var \DateTime
+     */
+    protected $addedAt;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->addedAt = new \DateTime();
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Relacje</p>
+
+                    <ul>
+                        <li>Jeden do jednego (One-To-One)</li>
+                        <li>Jeden do wielu (One-To-Many)</li>
+                        <li>Wiele do wielu (Many-To-Many)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Relacje</h2>
+
+                    <p>
+                        Relacje mogą być jednokierunkowe (ang. unidirectional) lub dwukierunkowe (ang. bidirectional).
+                    </p>
+
+                    <p>
+                        Dwukierunkowa relacja posiada stronę początkową
+                        (ang. owning side) oraz stronę zwrotną (ang. inverse side).
+                    </p>
+
+                    <p>
+                        Jednokierunkowa relacja ma wyłącznie stronę początkową (owning side).
+                    </p>
+
+                    <p class="source-link">
+                        http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/association-mapping.html
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Relacje</p>
+
+                    <p>Dodanie relacji do komentarza (model Comment)</p>
+                    <small>Strona początkowa (ang. owning side)</small>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px; line-height: 110%">
+/**
+ * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
+ * @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+ */
+protected $post;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Relacje</p>
+
+                    <p>Dodanie relacji do postu (model Post)</p>
+                    <small>Strona zwrotna (ang. inverse side)</small>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px; line-height: 110%">
+/**
+ * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
+ */
+protected $comments;
+                    </code></pre>
+
+                    <p>
+                        Doctrine ignoruje zmiany dokonane w relacji po stronie zwrotnej (inverse side)! Oznacza to,
+                        że zmiany dokonane w polu $comment zostaną zignorowane.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Relacje</p>
+
+                    <p>
+                        Jeszcze raz aktualizujemy bazę danych i aktualizujemy settery i gettery:
+                    </p>
+
+                   <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                       php app/console doctrine:generate:entities Connectmedica/BlogBundle/Entity
+                   </code></pre>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:schema:update --force
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Modele</h2>
+                    <p>Relacje</p>
+
+                    <img src="img/relations.png" style="height: 50vh" />
+                    <br/>
+                    <small>Zrzut ekranu z PHPMyAdmin</small>
+                </section>
+
+                <section>
+                    <h2>Relacje</h2>
+
+                    <p>Jak poradzić sobie ze stroną zwrotną?</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px; line-height: 110%">
+public function addComment(\Connectmedica\BlogBundle\Entity\Comment $comment)
+{
+    $this->comments[] = $comment;
+
+    // Modyfikujemy stronę początkową (owning side)
+    $comment->setPost($this);
+
+    return $this;
+}
+                    </code></pre>
+
+                    <p>Dzięki temu podejściu:</p>
+
+                    <ul>
+                        <li>Informacje w modelu Comment i Post są zsynchronizowane</li>
+                        <li>Nie musimy przejmować się, czy pracujemy ze stroną zwrotną</li>
+                    </ul>
+                </section>
+
+                <section>
+                   <h1>Część 3: Generowanie testowych danych</h1>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <ul>
+                        <li class="fragment">DoctrineFixturesBundle</li>
+                        <li class="fragment">Faker</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+                    <h3>DoctrineFixturesBundle</h3>
+                    <h4>Instalacja</h4>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php composer.phar require --dev doctrine/doctrine-fixtures-bundle
+                    </code></pre>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px; line-height: 110%">
+// app/AppKernel.php
+// ...
+
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        // ...
+        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+            $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+        }
+
+        return $bundles
+    }
+
+    // ...
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+                    <h3>Faker</h3>
+                    <h4>Instalacja</h4>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php composer.phar require --dev fzaninotto/faker
+                    </code></pre>
+
+                    <p>
+                        Faker nie jest pakietem Symfony dlatego nie wymaga rejestracji w AppKernel.php!
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+                    <h3>Fixtures</h3>
+                    <h4>Tworzymy klasy Fixtures generującej testowe posty.</h4>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 12px; line-height: 110%">
+namespace Connectmedica\BlogBundle\DataFixtures\ORM;
+
+use Connectmedica\BlogBundle\Entity\Post;
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory as FakerFactory;
+
+class LoadUserData implements FixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $faker = FakerFactory::create();
+
+        for ($i = 0; $i < 100; $i++) {
+            $post = new Post();
+
+            $post->setTitle($faker->sentence(rand(4, 12)));
+            $post->setContent(
+                implode(
+                    PHP_EOL,
+                    array_map(
+                        function($v) { return '<p>'.$v.'</p>'; },
+                        $faker->paragraphs(rand(3, 30))
+                    )
+                )
+            );
+
+            $manager->persist($post);
+        }
+
+        $manager->flush();
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+                    <h3>Ładowanie danych</h3>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:fixtures:load
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+                    <h3>Tworzymy klasy Fixtures generującej testowe komentarze.</h3>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <p>Aby móc wygenerować komentarze do postów potrzebujemy najpierw postów!</p>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <p>
+                        Modyfikujemy klasę LoadPosts dodając informację o kolejności w jakiej fixturki mają być ładowane.
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 12px; line-height: 110%">
+namespace Connectmedica\BlogBundle\DataFixtures\ORM;
+
+use Connectmedica\BlogBundle\Entity\Post;
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory as FakerFactory;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface; // <-- DODAJEMY
+
+class LoadPosts implements FixtureInterface, OrderedFixtureInterface // <-- Dodajmy nowy interfejs
+{
+    public function load(ObjectManager $manager)
+    {
+        // ...
+    }
+
+    /**
+     * Określa kolejność ładowania. Niższy numer oznacza wyższy priorytet.
+     */
+    public function getOrder()
+    {
+        return 1;
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <p>Fixturka generująca losowe komentarze.</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 12px; line-height: 110%">
+namespace Connectmedica\BlogBundle\DataFixtures\ORM;
+
+use Connectmedica\BlogBundle\Entity\Comment;
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory as FakerFactory;
+
+class LoadComments implements FixtureInterface, OrderedFixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $faker = FakerFactory::create();
+        $posts = $manager->getRepository('ConnectmedicaBlogBundle:Post')->findAll();
+
+        foreach ($posts as $post) {
+            for ($i = 0; $i < rand(0, 10); $i++) {
+                $comment = new Comment();
+
+                $comment->setPost($post);
+                $comment->setContent($faker->sentence(rand(3, 40)));
+                $comment->setAuthor($faker->name);
+                $comment->setAddedAt(new \DateTime);
+
+                $manager->persist($comment);
+            }
+
+            $manager->flush();
+        }
+    }
+
+    public function getOrder()
+    {
+        return 2;
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Generowanie testowych danych</h2>
+
+                    <p>Jeszcze raz ładujemy fiksturki:</p>
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:fixtures:load
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h1>Część 4: Kontrolery i routing</h1>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <ul>
+                        <li class="fragment">Kontrolery umieszczamy w katalogu <code>Controller</code></li>
+                        <li class="fragment">Kontrolery są klasami których nazwa kończy się na <code>Controller</code></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>Jak dodać kontroler?</p>
+
+                    <div class="fragment">
+                        <p>Za pomocą komendy Symfony:</p>
+                        <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                            php app/console generate:controller --controller ConnectmedicaBlogBundle:Homepage
+                        </code></pre>
+                    </div>
+
+                    <div class="fragment">
+                        <p>
+                            Lub sami tworzymy odpowiednią klasę.
+                        </p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>Kontroler strony głównej - <code>HomepageController</code></p>
+
+                    <div class="fragment">
+                        <p>Za pomocą komendy Symfony:</p>
+                        <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                            php app/console generate:controller --controller ConnectmedicaBlogBundle:Homepage
+                        </code></pre>
+                    </div>
+
+                    <div class="fragment">
+                        <p>
+                            Lub sami odpowiednią tworzymy klasę.
+                        </p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>Kontroler strony głównej - <code>HomepageController</code></p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px; line-height: 110%">
+namespace Connectmedica\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+
+class HomepageController extends Controller
+{
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction()
+    {
+        return new Response('Hello world!');
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Kod obsługujący żądania użytkownika jest zdefiniowany w akcjach i kontrolerach. Aby Symfony
+                        wiedziało który akcja i który kontroler odpowiada za wygenerowanie odpowiedzi musimy stworzyć
+                        reguły trasowania (ang. routing).
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <img src="img/request-flow.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Symfony 2 obsługuje kilka sposobów konfiguracji trasowania:
+                    </p>
+
+                    <ul>
+                        <li>Adnotacje</li>
+                        <li>YAML</li>
+                        <li>XML</li>
+                        <li>PHP</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Konfiguracja poprzez adnotacje</p>
+                    <div>
+                        <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+class HomepageController extends Controller
+{
+    /**
+     * @Route("/app/example", name="connectmedica_blog_homepage")
+     */
+    public function indexAction()
+    {
+        return new Response('Hello world!');
+    }
+}
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Konfiguracja poprzez plik YAML</p>
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+# app/config/routing.yml
+connectmedica_blog_homepage:
+    path:     /app/example
+    defaults: { _controller: ConnectmedicaBlogBundle:Homepage:index }
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Konfiguracja poprzez plik XML</p>
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+&lt;!-- app/config/routing.xml --&gt;
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing
+           http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="connectmedica_blog_homepage" path="/app/example">
+        <default key="_controller">ConnectmedicaBlogBundle:Homepage:index</default>
+    </route>
+</routes>
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Konfiguracja poprzez plik PHP</p>
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+// app/config/routing.php
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+
+$collection = new RouteCollection();
+$collection->add('connectmedica_blog_homepage', new Route('/app/example', array(
+    '_controller' => 'ConnectmedicaBlogBundle:Homepage:index',
+)));
+
+return $collection;
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Możemy importować konfiguracje zapisane w różnych formatach</p>
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+// app/config/routing.yml
+
+app_annotation:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app_yaml:
+    resource: "@ConnectmedicaBlogBundle/Resources/config/routing.yml"
+    type:     yaml
+    prefix:   /
+
+app_xml:
+    resource: "@ConnectmedicaBlogBundle/Resources/config/routing.xml"
+    type:     xml
+    prefix:   /
+
+app_php:
+    resource: "@ConnectmedicaBlogBundle/Resources/config/routing.php"
+    type:     php
+    prefix:   /
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+                    <p>Trasowanie dla HomepageController</p>
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+connectmedica_blog_homepage:
+    path:     /
+    defaults: { _controller: ConnectmedicaBlogBundle:Homepage:index }
+                        </code></pre>
+                    </div>
+
+                    <p>
+                        Powyższy wpis możemy umieścić  bezpośrednio w <b>app/config/routing.yml</b> lub
+                        przenieść go do pakietu (<b>src/Connectmedica/BlogBundle/Resources/config/routing.yml</b>
+                        i zaimportować:
+                    </p>
+
+                    <div>
+                        <pre><code class="yaml" data-trim contenteditable style="font-size: 20px;">
+blog:
+    resource: "@ConnectmedicaBlogBundle/Resources/config/routing.yml"
+    type:     yaml
+    prefix:   /
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Używając konsoli Symfony możemy wyświetlić wszystkie trasy w Symfony i sprawdzić, czy nasza
+                        trasa zostałą poprawnie zaimportowana.
+                    </p>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console debug:router
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/router.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <img src="img/hello.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Jak pobrać dane z Doctrine? Dobrą praktyką jest pobieranie danych z repozytorium.
+                    </p>
+
+                    <p class="fragment">
+                        Repozytoria możemy traktować jak kolekcje wpisów w bazie danych. Kolekcje możemy przeszukiwać
+                        pod kątem interesujących nas wpisów a także rozszerzać je dodając własne metody które bedą
+                        zwracać interesujące nas wpisy.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+use Connectmedica\BlogBundle\Repository\PostRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+
+class HomepageController extends Controller
+{
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction()
+    {
+        $postRepository = $this->getDoctrine()->getRepository('ConnectmedicaBlogBundle:Post');
+        $posts = $postRepository->findAll();
+
+        return new Response(
+            implode(
+                PHP_EOL,
+                array_map(
+                    function($post) { return '<h2>'.$post->getTitle().'</h2>'; },
+                    $posts
+                )
+            )
+        );
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/posts.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Zamiast używać metody <b>findAll</b> z repozytorium lepiej jest stworzyć dedykowaną
+                        metodę do pobierania postów na stronę główną którą będziemy mogli użyć w innych miejscach, np.
+                        do generowania RSS.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Repozytorium jest zwykłą klasą która dziedziczy po <b>Doctrine\ORM\EntityRepository</b>
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+namespace Connectmedica\BlogBundle\Repository;
+
+use Doctrine\ORM\EntityRepository;
+
+class PostRepository extends EntityRepository
+{
+
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Dodajemy adnotację która informuje Doctrine, aby używał naszej klasy repozytorium.
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+/**
+ * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Connectmedica\BlogBundle\Repository\PostRepository")
+ */
+class Post
+{
+    // ...
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Zapytanie do bazy danych konstruujemy za pomocą <b>QueryBuildera</b>. Możemy też użyć
+                        języka <b>DQL</b>. Zarówno <b>QueryBuilder</b> jak i język <b>DQL</b> są bardzo rozbudowane i więcej informacji na
+                        ich temat możecie znaleźć w dokumentacji Doctrine:
+                    </p>
+
+                    <small>
+                        <a href="http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/query-builder.html">
+                            http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/query-builder.html
+                        </a>
+                    </small>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+class PostRepository extends EntityRepository
+{
+    /**
+     * @return Post[]
+     */
+    public function findHomepagePosts()
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+
+        $qb
+            ->select('post')
+            ->from('ConnectmedicaBlogBundle:Post', 'post')
+            ->orderBy('post.id', 'DESC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Można też trochę prościej:
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+class PostRepository extends EntityRepository
+{
+    /**
+     * @return Post[]
+     */
+    public function findHomepagePosts()
+    {
+        return $this->findBy([], ['id' => 'DESC']);
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Kontrolery i routing</h2>
+
+                    <p>
+                        Teraz możemy zmodyfikować kontroler aby używał naszej dedykowanej metody:
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+public function indexAction()
+{
+    $postRepository = $this->getDoctrine()->getRepository('ConnectmedicaBlogBundle:Post');
+    $posts = $postRepository->findHomepagePosts();
+
+    return new Response(
+        implode(
+            PHP_EOL,
+            array_map(
+                function($post) { return '<h2>'.$post->getTitle().'</h2>'; },
+                $posts
+            )
+        )
+    );
+}
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h1>Część 5: Szablony</h1>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>
+                        Dostępne systemy Szablonów:
+                    </p>
+
+                    <ul>
+                        <li><b>PHP</b> - prosty system oparty na PHP, mało popularny</li>
+                        <li class="fragment highlight-blue"><b>Twig</b> - wzorowany na Django i Jinja</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 16px;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;My Webpage&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;ul id=&quot;navigation&quot;&gt;
+        {% for item in navigation %}
+            &lt;li&gt;&lt;a href=&quot;{{ item.href }}&quot;&gt;{{ item.caption }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+        &lt;/ul&gt;
+
+        &lt;h1&gt;My Webpage&lt;/h1&gt;
+        {{ a_variable }}
+    &lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Zmienne</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 16px;">
+{{ foo.getBar()['element'] }}
+{{ foo.getBar['element'] }}
+{{ foo.bar['element'] }}
+{{ foo.bar.element }}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Filtry</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 16px;">
+{{ name|striptags|title }}
+{{ list|join(', ') }}
+{% filter upper %}
+    This text becomes uppercase
+{% endfilter %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Warunki, pętle</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 16px;">
+<h1>Members</h1>
+<ul>
+    {% for user in users %}
+        <li>{{ user.username|e }}</li>
+    {% endfor %}
+</ul>
+
+{% if users|length > 0 %}
+    <ul>
+        {% for user in users %}
+            <li>{{ user.username|e }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Bloki</p>
+
+                    <p>
+                        Bloki pozwalają na dziedziczenie szablonów i ich rozszerzanie.
+                    </p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# layout.html.twig #}
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;My Webpage&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        {% block body %}
+            Hello!
+        {% endblock %}
+    &lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Bloki</p>
+
+                    <p>
+                        Rozszerzanie innych szablonów.
+                    </p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{% exnteds "layout.html.twig" %}
+
+{% block body %}
+    Hello world!
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Layout naszego bloga</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connectmedcia/BlogBundle/Resources/views/layout.html.twig %}
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Blog&lt;/title&gt;
+
+    &lt;link href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;script src=&quot;https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://oss.maxcdn.com/respond/1.4.2/respond.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    {% block body %}{% endblock %}
+
+    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Layout naszego bloga</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connectmedcia/BlogBundle/Resources/views/Homepage/index.html.twig %}
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% block body %}
+    <h1>Lista postów:</h1>
+
+    {# TODO! #}
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Modyfikujemy kod kontrolera aby używał szablonów:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+public function indexAction()
+{
+    /** @var PostRepository $postRepository */
+    $postRepository = $this->getDoctrine()->getRepository('ConnectmedicaBlogBundle:Post');
+    $posts = $postRepository->findHomepagePosts();
+
+    return $this->render(
+        'ConnectmedicaBlogBundle:Homepage:index.html.twig',
+        [
+            'posts' => $posts
+        ]
+    );
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Szablony</h2>
+
+                    <p>Dodajemy listę postów:</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connectmedcia/BlogBundle/Resources/views/Homepage/index.html.twig %}
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% block body %}
+    <h1>Lista postów:</h1>
+
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ path('connectmedica_blog_post_show', {id: post.id}) }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/posts-list.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h1>Część 6: Widok posta i lista komentarzy</h1>
+                </section>
+
+                <section>
+                    <h2>Widok posta i lista komentarzy</h2>
+
+                    <p>
+                        Dodajemy kontroler <b>PostController</b>
+                    </p>
+
+                    <p>Za pomocą komendy Symfony:</p>
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console generate:controller --controller ConnectmedicaBlogBundle:Post
+                    </code></pre>
+
+                    <p>
+                        <i>lub</i>
+                    </p>
+
+                    <p>tworzymy go sami :)</p>
+                </section>
+
+                <section>
+                    <h2> Widok posta i lista komentarzy</h2>
+
+                    <p>
+                        Dodajemy scieżkę do routera
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 24px;">
+connectmedica_blog_post_show:
+    path:         /show/{id}
+    defaults:     { _controller: ConnectmedicaBlogBundle:Post:show }
+    requirements: { id: \d+ }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2> Widok posta i lista komentarzy</h2>
+
+                    <p>
+                        Kontroler
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 24px;">
+public function showAction($id)
+{
+    $em   = $this->getDoctrine()->getManager();
+    $post = $em->find('ConnectmedicaBlogBundle:Post', $id);
+
+    if (!$post) {
+        throw $this->createNotFoundException();
+    }
+
+    return $this->render(
+        'ConnectmedicaBlogBundle:Post:show.html.twig',
+        [
+            'post' => $post
+        ]
+    );
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2> Widok posta i lista komentarzy</h2>
+                    <p>Szablon</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 24px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Post/show.html.twig #}
+
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% block body %}
+    <h1>{{ post.title }}</h1>
+
+    {{ post.content|raw }}
+
+    <h2>Komentarze:</h2>
+    {% for comment in post.comments %}
+       <div class="panel panel-default">
+           <div class="panel-heading">
+               <b>{{ comment.author }}</b> napisał/a o {{ comment.addedAt.format('d.m.Y H:i') }}
+           </div>
+           <div class="panel-body">
+               {{ comment.content }}
+           </div>
+       </div>
+    {% endfor %}
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/post-show.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h1>Część 7: Formularze</h1>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Formularz można stworzyć bezpośrednio w kontrolerze (lub gdziekolwiek indziej)</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+$form = $this->createFormBuilder($task, null, [
+    'data_class' => 'Connectmedica\BlogBundle\Entity\Comment'
+])
+    ->add('author')
+    ->add('content')
+    ->getForm()
+;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Formularz może być też obiektem</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 16px;">
+namespace Connectmedica\BlogBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class CommentType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('author')
+            ->add('content')
+            ->add('submit', 'submit')
+        ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => 'Connectmedica\BlogBundle\Entity\Comment'
+        ]);
+    }
+
+    public function getName()
+    {
+        return 'connectmedica_blogbundle_comment';
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Opcja "data_class"</p>
+
+                    <table role="presentation" style="width: 100%">
+                        <tr>
+                            <td>
+                                <input type="text" placeholder="Author"><br/>
+                                <textarea type="text" placeholder="Content" rows="10"></textarea><br/>
+                            </td>
+                            <td>
+                                <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// 'data_class' => 'Connectmedica\BlogBundle\Entity\Comment'
+
+$data->setAuthor(/*...*/);
+$data->setContent(/*...*/);
+                                </code></pre>
+
+                                <p style="text-align: center">
+                                    <i>LUB</i>
+                                </p>
+
+                                <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// bez 'data_class'
+
+$data = [
+    'author'  => /*...*/,
+    'content' => /*...*/,
+];
+                                </code></pre>
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Formularze można też wygenerować.</p>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console generate:doctrine:form ConnectmedicaBlogBundle:Comment
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Renderowanie formularza (kontroler)</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// src\Connectmedica\BlogBundle\Controller\PostController.php
+
+public function showAction($id)
+{
+    $em   = $this->getDoctrine()->getManager();
+    $post = $em->find('ConnectmedicaBlogBundle:Post', $id);
+
+    if (!$post) {
+        throw $this->createNotFoundException();
+    }
+
+    $commentForm = $this->createForm(new CommentType(), null, []);
+
+    return $this->render(
+        'ConnectmedicaBlogBundle:Post:show.html.twig',
+        [
+            'post'         => $post,
+            'comment_form' => $commentForm->createView()
+        ]
+    );
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Renderowanie formularza (szablon)</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Post/show.html.twig #}
+
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% form_theme comment_form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    {# ... #}
+
+    {{ form(comment_form) }}
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/form.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h2>Formularze</h2>
+                    <p>Obsługa formularza</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// src\Connectmedica\BlogBundle\Controller\PostController.php
+
+use Connectmedica\BlogBundle\Entity\Comment;
+use Symfony\Component\HttpFoundation\Request;
+
+class PostController extends Controller
+{
+    public function showAction(Request $request, $id)
+    {
+        //...
+
+        $commentForm = $this->createForm(new CommentType(), null, []);
+
+        $commentForm->handleRequest($request);
+        if ($commentForm->isSubmitted()) {
+            /** @var Comment $comment */
+            $comment = $commentForm->getData();
+
+            $comment->setPost($post);
+
+            $em->persist($comment);
+            $em->flush();
+        }
+
+        //...
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h1>Część 8: Panel administracyjny</h1>
+                    <p>autoryzacje zrobimy potem :)</p>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <ul>
+                        <li>
+                            Możliwość dodania i edycji postu
+                            <ul>
+                                <li>Admin/PostController::editAction</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Możliwość usunięcia postu
+                            <ul>
+                                <li>Admin/PostController::deleteAction</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Możliwość usunięcia komentarza
+                            <ul>
+                                <li>Admin/CommentController::deleteAction</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>
+                        Kontroler usuwający komentarze. ID komentarza jest przesyłany w parametrze "id". Po usunięciu
+                        komentarza użytkownik zostaje przekierowany na poprzednią stronę.
+                    </p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// src\Connectmedica\BlogBundle\Controller\Admin\CommmentController.php
+
+namespace Connectmedica\BlogBundle\Controller\Admin;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
+class CommentController extends Controller
+{
+    public function deleteAction(Request $request)
+    {
+        $id = $request->request->get('id');
+        $em = $this->getDoctrine()->getManager();
+
+        $comment = $em->find('ConnectmedicaBlogBundle:Comment', $id);
+
+        if (!$comment) {
+            throw $this->createNotFoundException();
+        }
+
+        $em->remove($comment);
+        $em->flush();
+
+        return $this->redirect($request->headers->get('referer'));
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>
+                        Trasa obsługująca wyłącznie żądania POST
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 18px;">
+# src\Connectmedica\BlogBundle\Resources\config\routing.yml
+
+connectmedica_blog_admin_comment_delete:
+    path:         /admin/comment/delete
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Comment:delete }
+    methods:      [POST]
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>
+                        Przycisk pozwalający usunąć komentarz
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 18px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Post/show.html.twig #}
+
+{# ... #}
+{% block body %}
+    {# ... #}
+    {% for comment in post.comments %}
+       <div class="panel panel-default">
+           <div class="panel-heading">
+               <b>{{ comment.author }}</b> napisał/a o {{ comment.addedAt.format('d.m.Y H:i') }}
+           </div>
+           <div class="panel-body">
+               {{ comment.content }}
+
+               {# Przycisk usuń #}
+               <hr/>
+               <form method="post" action="{{ path('connectmedica_blog_admin_comment_delete') }}" class="pull-right">
+                   <input type="hidden" name="id" value="{{ comment.id }}" />
+                   <button type="submit" class="btn btn-danger">Usuń</button>
+               </form>
+           </div>
+       </div>
+    {% endfor %}
+    {# ... #}
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>
+                       Formularz posta
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 16px;">
+// src\Connectmedica\BlogBundle\Form\PostType.php
+
+namespace Connectmedica\BlogBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class PostType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', null, [
+                'label' => 'Tytuł'
+            ])
+            ->add('content', 'textarea', [
+                'label' => 'Treść',
+                'attr'  => [
+                    'rows' => 10
+                ]
+            ])
+            ->add('submit', 'submit', [
+                'label' => 'Wyślij'
+            ])
+        ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => 'Connectmedica\BlogBundle\Entity\Post'
+        ]);
+    }
+
+    public function getName()
+    {
+        return 'connectmedica_blogbundle_post';
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+                    <p>Formularz posta:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 16px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Admin/Post/edit.html.twig #}
+
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    {% if post.id %}
+        <h1>{{ post.title }}</h1>
+    {% else %}
+        <h1>Nowy post</h1>
+    {% endif %}
+
+    {{ form(form) }}
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>Dodawania i edycja posta:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 16px;">
+// src\Connectmedica\BlogBundle\Controller\PostController.php
+
+namespace Connectmedica\BlogBundle\Controller\Admin;
+
+use Connectmedica\BlogBundle\Entity\Post;
+use Connectmedica\BlogBundle\Form\PostType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
+class PostController extends Controller
+{
+    public function editAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($id) {
+            $post = $em->find('ConnectmedicaBlogBundle:Post', $id);
+        } else {
+            $post = new Post;
+        }
+
+        if (!$post) {
+            throw $this->createNotFoundException();
+        }
+
+        $form = $this->createForm(new PostType(), $post, []);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->persist($post);
+            $em->flush();
+
+            return $this->redirectToRoute('connectmedica_blog_admin_post_edit', ['id' => $post->getId()]);
+        }
+
+        return $this->render(
+            'ConnectmedicaBlogBundle:Admin/Post:edit.html.twig',
+            [
+                'post' => $post,
+                'form' => $form->createView()
+            ]
+        );
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+                    <p>Usuwanie posta:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 16px;">
+// src\Connectmedica\BlogBundle\Controller\PostController.php
+
+namespace Connectmedica\BlogBundle\Controller\Admin;
+
+use Connectmedica\BlogBundle\Entity\Post;
+use Connectmedica\BlogBundle\Form\PostType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
+class PostController extends Controller
+{
+    // ...
+
+    public function deleteAction(Request $request)
+    {
+        $id = $request->request->get('id');
+        $em = $this->getDoctrine()->getManager();
+
+        $post = $em->find('ConnectmedicaBlogBundle:Post', $id);
+        if (!$post) {
+            throw $this->createNotFoundException();
+        }
+
+        $em->remove($post);
+        $em->flush();
+
+        return $this->redirectToRoute('connectmedica_blog_homepage');
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+                    <p>Routing:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 16px;">
+# src\Connectmedica\BlogBundle\Resources\config\routing.yml
+
+connectmedica_blog_admin_post_new:
+    path:         /admin/post/new
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:edit, id: null }
+
+connectmedica_blog_admin_post_edit:
+    path:         /admin/post/{id}/edit
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:edit }
+
+connectmedica_blog_admin_post_delete:
+    path:         /admin/post/delete
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:delete }
+    methods:      [POST]
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Panel administracyjny</h2>
+
+                    <p>Wszystko działa, ale nie mamy żadnej autoryzacji :(</p>
+                </section>
+
+                <section>
+                    <h1>Część 9: Uwierzytelnianie i autoryzacja</h1>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+
+                    <section>
+                        <img src="img/security.png" style="height: 60vh" />
+                    </section>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Konfiguracja komponentu Security:</p>
+
+                    <pre><code class="yml" data-trim contenteditable style="font-size: 18px;">
+# app/config/security.yml
+
+security:
+    firewalls:
+        secured_area:
+            pattern:    ^/
+            anonymous: ~
+            logout:
+                path:   /admin/logout
+                target: /
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login_check
+
+        dev:
+           pattern: ^/(_(profiler|wdt)|css|images|js)/
+           security: false
+
+    access_control:
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin: { password: admin, roles: 'ROLE_ADMIN' }
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Kontroler obsługujący logowanie:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+// src\Connectmedica\BlogBundle\Controller\SecurityController.php
+
+namespace Connectmedica\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class SecurityController extends Controller
+{
+    public function loginAction()
+    {
+        $authenticationUtils = $this->get('security.authentication_utils');
+
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render(
+            'security/login.html.twig',
+            array(
+                // last username entered by the user
+                'last_username' => $lastUsername,
+                'error'         => $error,
+            )
+        );
+    }
+
+    public function loginCheckAction()
+    {
+        // empty
+    }
+
+    public function logoutAction()
+    {
+        // empty
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Szablon logowania:</p>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Security/login.html.twig #}
+
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% block body %}
+    <h1>Logowanie</h1>
+
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6 col-md-push-3">
+            <form action="{{ path('connectmedica_blog_login_check') }}" method="post">
+                <div class="form-group">
+                    <label for="username">Login:</label>
+                    <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Hasło:</label>
+                    <input type="password" id="password" name="_password" class="form-control" />
+                </div>
+
+                <hr/>
+
+                <button type="submit" class="btn btn-primary">Zaloguj</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Trasowanie:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 18px;">
+# src\Connectmedica\BlogBundle\Resources\config\routing.yml
+
+connectmedica_blog_login:
+    path:         /admin/login
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:login }
+
+connectmedica_blog_login_check:
+    path:         /admin/login_check
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:loginCheck }
+
+connectmedica_blog_logout:
+    path:         /admin/logout
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:logout }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/login.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <img src="img/loginp.png" style="height: 40vh" />
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Sprawdzanie uprawnień:</p>
+
+                    <p><i>W kontrolerze:</i></p>
+                    <pre><code class="php" data-trim contenteditable style="font-size: 18px;">
+if ($this->isGranted('ROLE_ADMIN')) {
+    // ...
+}
+                    </code></pre>
+
+                    <p><i>W szablonie:</i></p>
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{% if is_granted('ROLE_ADMIN') %}
+    {# ... #}
+{% endif %}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+                    <p>Kilka usprawnień dla bloga:</p>
+
+                    <ul>
+                        <li>Przycisk "dodaj post" widoczny dla administratora</li>
+                        <li>Przycisk "edytuj post" widoczny dla administratora</li>
+                        <li>Ukrywamy przycisk usunięcia posta dla użytkowników</li>
+                        <li>Przycisk "wyloguj"</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# layout.html.twig #}
+{# ... #}
+&lt;body&gt;
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ path('connectmedica_blog_homepage') }}">Blog</a>
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ path('connectmedica_blog_admin_post_new') }}">Dodaj post</a></li>
+                    {% block admin_links %}{% endblock %}
+                    <li><a href="{{ path('connectmedica_blog_logout') }}">Wyloguj</a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </nav>
+    {# ... #}
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/navbar.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h2>Uwierzytelnianie i autoryzacja</h2>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 18px;">
+{# src/Connetmedica/BlogBundle/Resources/view/Post/show.html.twig #}
+{# ... #}
+
+{% block admin_links %}
+    <li>
+        <a href="{{ path('connectmedica_blog_admin_post_edit', {id: post.id}) }}">Edytuj post</a>
+    </li>
+    <li>
+        <form method="post" action="{{ path('connectmedica_blog_admin_post_delete') }}" id="delete_form">
+            <input type="hidden" name="id" value="{{ post.id }}" />
+        </form>
+        <a onclick="document.getElementById('delete_form').submit();" href="#">Usuń</a>
+    </li>
+{% endblock %}
+
+{# ... #}
+
+{% if is_granted('ROLE_ADMIN') %}
+   <hr/>
+   <form method="post" action="{{ path('connectmedica_blog_admin_comment_delete') }}">
+       <input type="hidden" value="{{ comment.id }}" />
+       <button type="submit" class="btn btn-danger">Usuń</button>
+   </form>
+{% endif %}
+
+{# ... #}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <img src="img/post-edit.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <h1>Przy okazji...</h1>
+                    <p>Dlaczego Symfony jest takie fajne :)</p>
+                </section>
+
+                <section>
+                    <p>Dokonajny trzech drobnych zmian w projekcie:</p>
+
+                    1. Najpierw dodajmy nową zależność do composera:
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        composer require egeloen/ckeditor-bundle
+                    </code></pre>
+                </section>
+
+                <section>
+                    2. Dodajmy nowy Bundle w AppKernel.php
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// app/AppKernel.php
+
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Config\Loader\LoaderInterface;
+
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            /* ... */
+
+            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+        );
+
+        /* ... */
+
+        return $bundles;
+    }
+    /* ... */
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>Zmieńmy typ formularza w src/Connectmedica/BlogBundle/Form/PostType.php:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\Form\PostType.php
+// ...
+$builder
+    ->add('title', null, [
+        'label' => 'Tytuł'
+    ])
+    ->add('content', 'ckeditor', [ // <-- TUTAJ :)
+        'label' => 'Treść',
+        'attr'  => [
+            'rows' => 10
+        ]
+    ])
+    ->add('submit', 'submit', [
+        'label' => 'Wyślij'
+    ])
+;
+// ...
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>CKEditor zainstalowany w... 30 sekund?</p>
+                    <img src="img/cke.png" style="height: 60vh" />
+                </section>
+
+                <section>
+                    <p>Istnieje wiele innych świetnych pakietów:</p>
+
+                    <ul>
+                        <li class="fragment"><b>FOSUserBundle</b> - zaawansowana obsługa użytkowników, mechanizm przypomnenia hasła, profil użytkownika</li>
+                        <li class="fragment"><b>SonataAdminBundle</b> - generator rozbudowanych paneli administracyjnych</li>
+                        <li class="fragment"><b>HWIOAuthBundle</b> - obsługa autentykacji za pomocą protokołu OAuth (używane m.in. przez Google czy Facebook)</li>
+                        <li class="fragment"><b>MopaBootstrapBundle</b> - zestaw szablonów i narzedzi ułatwiających pracę z Twitter Bootstrap</li>
+                        <li class="fragment"><b>KnpPaginatorBundle</b> - narzędzie ułątwiające stronnicowanie (tego zabrakło w naszym projekcie)</li>
+                        <li class="fragment"><b>LiipImagineBundle</b> - narzędzie do przekształceń na grafikach: generowanie miniaturek, nakłądanie filtrów itp.</li>
+                        <li class="fragment"><b>VichUploaderBundle</b> - ułatwia wgrywanie plików na serwer</li>
+                    </ul>
+
+                    <p class="fragment">i wiele więcej...</p>
+                </section>
+
+                <section>
+                    <h1>Część 10: Wstrzykiwanie zależności</h1>
+                    <p>Dependency Injection</p>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Stworzymy prostą usługę generującą slugi dla postów.</p>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Najpierw dodajmy nowe pole do modelu:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\Entity\Post.php
+// ...
+
+class Post
+{
+    /* ... */
+
+    /**
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @var string
+     */
+    protected $slug;
+
+    /* ... */
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return Post
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /* ... */
+}
+
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Aktualizujemy bazę danych:</p>
+
+                    <pre><code class="bash" data-trim contenteditable style="font-size: 24px;">
+                        php app/console doctrine:schema:update --force
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Usługa generująca Slugi, potrafi wygenerować Slug dla tekstu i obsługiwać obiekty:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\Util\Slugify.php
+
+namespace Connectmedica\BlogBundle\Util;
+
+class Slugify
+{
+    protected $delimiter = '_';
+
+    protected $handlers = [];
+
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+
+        return $this;
+    }
+
+    public function addHandler(SlugifyHandlerInterface $handler)
+    {
+        $this->handlers[] = $handler;
+    }
+
+    public function slugifyObject($object)
+    {
+        foreach ($this->handlers as $handler) {
+            if ($handler->isSupported($object)) {
+                $handler->handle($object, $this);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function slugifyString($string)
+    {
+        $string = preg_replace('#[^\\pL\d]+#u', $this->delimiter, $string);
+
+        return transliterator_transliterate(
+            "Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();",
+            $string
+        );
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Usługa generująca Slugi, potrafi wygenerować Slug dla tekstu i obsługiwać obiekty:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\Util\SlugifyHandlerInterface.php
+namespace Connectmedica\BlogBundle\Util;
+
+/**
+ * Class SlugifyHandlerInterface
+ */
+interface SlugifyHandlerInterface
+{
+    /**
+     * @param mixed $object
+     *
+     * @return mixed
+     */
+    public function isSupported($object);
+
+    /**
+     * @param mixed $object
+     *
+     * @param Slugify $slug
+     */
+    public function handle($object, Slugify $slug);
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Usługa generująca Slugi, potrafi wygenerować Slug dla tekstu i obsługiwać obiekty:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\Util\SlugifyPostHandler.php
+namespace Connectmedica\BlogBundle\Util;
+
+use Connectmedica\BlogBundle\Entity\Post;
+
+class SlugifyPostHandler implements SlugifyHandlerInterface
+{
+    public function isSupported($object)
+    {
+        return $object instanceof Post;
+    }
+
+    public function handle($object, Slugify $slug)
+    {
+        $object->setSlug($slug->slugifyString($object->getTitle()));
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Rejestrujemy usługę:</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 14px;">
+# src/Connectmedica/BlogBundle/Resources/services.yml
+
+services:
+    connectmedica_blog.slugify:
+        class: Connectmedica\BlogBundle\Util\Slugify
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Wstrzykujemy zależności :)</p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 14px;">
+# src/Connectmedica/BlogBundle/Resources/services.yml
+
+services:
+    connectmedica_blog.slugify_post_handler:
+        class: Connectmedica\BlogBundle\Util\SlugifyPostHandler
+
+    connectmedica_blog.slugify:
+        class: Connectmedica\BlogBundle\Util\Slugify
+        calls:
+            - [addHandler, [@connectmedica_blog.slugify_post_handler]]
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>Event Listener korzystający z naszej usługi:</p>
+
+                    <pre><code class="php" data-trim contenteditable style="font-size: 14px;">
+// src\Connectmedica\BlogBundle\EventListener\SlugListener.php
+namespace Connectmedica\BlogBundle\EventListener;
+
+use Connectmedica\BlogBundle\Util\Slugify;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+class SlugListener
+{
+    protected $slugify;
+
+    public function __construct(Slugify $slugify)
+    {
+        $this->slugify = $slugify;
+    }
+
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        $this->slugify->slugifyObject($args->getEntity());
+    }
+
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $this->slugify->slugifyObject($args->getEntity());
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>
+                        Wstrzykujemy zależności do naszego Event Listenera i przy okazji tagujemy naszą klasę dzięki
+                        czemu możemy wykonać odwrócone wstrzykiwanie zależności.
+                    </p>
+
+                    <p>
+                        Doctrine sam znajduję usługi na podstawie tagów.
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 14px;">
+# src/Connectmedica/BlogBundle/Resources/services.yml
+services:
+    connectmedica_blog.slug_listener:
+        class: Connectmedica\BlogBundle\EventListener\SlugListener
+        arguments: [@connectmedica_blog.slugify]
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>
+                        Na koniec modyfikujemy scieżki oby obsługiwały parametr slug:
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 14px;">
+# src/Connectmedica/BlogBundle/Resources/routing.yml
+connectmedica_blog_post_show:
+    path:         /show/{id}/{slug}
+    defaults:     { _controller: ConnectmedicaBlogBundle:Post:show, slug: '' }
+    requirements: { id: \d+ }
+                    </code></pre>
+
+                    <pre><code class="html" data-trim contenteditable style="font-size: 14px;">
+{# src/Connectmedcia/BlogBundle/Resources/views/Homepage/index.html.twig %}
+{# ... #}
+<a href="{{ path('connectmedica_blog_post_show', {id: post.id, slug: post.slug}) }}">{{ post.title }}</a>
+{# ... #}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <p>
+                        Wstrzykujemy zależności do naszego Event Listenera i przy okazji tagujemy naszą klasę dzięki
+                        czemu możemy wykonać odwrócone wstrzykiwanie zależności.
+                    </p>
+
+                    <p>
+                        Doctrine sam znajduję usługi na podstawie tagów.
+                    </p>
+
+                    <pre><code class="yaml" data-trim contenteditable style="font-size: 14px;">
+# src/Connectmedica/BlogBundle/Resources/services.yml
+services:
+    connectmedica_blog.slug_listener:
+        class: Connectmedica\BlogBundle\EventListener\SlugListener
+        arguments: [@connectmedica_blog.slugify]
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h1>Koniec :)</h1>
+
+                    <h2>Dziękuje wszystkim za udział w warsztatach!</h2>
+                </section>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                width: 1920*0.8,
+                height: 1080*0.8,
+
+                controls: true,
+                progress: true,
+                history: true,
+                center: false,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>

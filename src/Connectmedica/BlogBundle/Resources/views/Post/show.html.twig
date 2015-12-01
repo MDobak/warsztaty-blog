@@ -1,0 +1,46 @@
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% form_theme comment_form 'bootstrap_3_layout.html.twig' %}
+
+{% block admin_links %}
+    <li>
+        <a href="{{ path('connectmedica_blog_admin_post_edit', {id: post.id}) }}">Edytuj post</a>
+    </li>
+    <li>
+        <form method="post" action="{{ path('connectmedica_blog_admin_post_delete') }}" id="delete_form">
+            <input type="hidden" name="id" value="{{ post.id }}" />
+        </form>
+        <a onclick="document.getElementById('delete_form').submit();" href="#">Usuń</a>
+    </li>
+{% endblock %}
+
+{% block body %}
+
+    <h1>{{ post.title }}</h1>
+
+    {{ post.content|raw }}
+
+    <h2>Komentarze:</h2>
+
+    {% for comment in post.comments %}
+       <div class="panel panel-default">
+           <div class="panel-heading">
+               <b>{{ comment.author }}</b> napisał/a o {{ comment.addedAt.format('d.m.Y H:i') }}
+           </div>
+           <div class="panel-body">
+               {{ comment.content|raw }}
+
+               {% if is_granted('ROLE_ADMIN') %}
+                   <hr/>
+                   <form method="post" action="{{ path('connectmedica_blog_admin_comment_delete') }}">
+                       <input type="hidden" value="{{ comment.id }}" />
+                       <button type="submit" class="btn btn-danger">Usuń</button>
+                   </form>
+               {% endif %}
+           </div>
+       </div>
+    {% endfor %}
+
+    {{ form(comment_form) }}
+
+{% endblock %}

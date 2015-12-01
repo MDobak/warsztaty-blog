@@ -1,0 +1,39 @@
+connectmedica_blog_homepage:
+    path:     /
+    defaults: { _controller: ConnectmedicaBlogBundle:Homepage:index }
+
+connectmedica_blog_post_show:
+    path:         /show/{id}/{slug}
+    defaults:     { _controller: ConnectmedicaBlogBundle:Post:show, slug: '' }
+    requirements: { id: \d+ }
+
+connectmedica_blog_login:
+    path:         /admin/login
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:login }
+
+connectmedica_blog_login_check:
+    path:         /admin/login_check
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:loginCheck }
+
+connectmedica_blog_logout:
+    path:         /admin/logout
+    defaults:     { _controller: ConnectmedicaBlogBundle:Security:logout }
+
+connectmedica_blog_admin_post_new:
+    path:         /admin/post/new
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:edit, id: 0 }
+
+connectmedica_blog_admin_post_edit:
+    path:         /admin/post/{id}/edit
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:edit }
+
+connectmedica_blog_admin_post_delete:
+    path:         /admin/post/delete
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Post:delete }
+    methods:      [POST]
+
+connectmedica_blog_admin_comment_delete:
+    path:         /admin/comment/delete
+    defaults:     { _controller: ConnectmedicaBlogBundle:Admin/Comment:delete }
+    methods:      [POST]
+

@@ -1,0 +1,13 @@
+{% extends "@ConnectmedicaBlog/layout.html.twig" %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    {% if post.id %}
+        <h1>{{ post.title }}</h1>
+    {% else %}
+        <h1>Nowy post</h1>
+    {% endif %}
+
+    {{ form(form) }}
+{% endblock %}
